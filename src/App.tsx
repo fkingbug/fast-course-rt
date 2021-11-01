@@ -1,26 +1,21 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-
-function App() {
+import React from 'react'
+import Card, { CardVariant } from './components/Card'
+import UserList from './components/UserList'
+//15:53
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Card
+        onClick={(num) => console.log('click', num)}
+        variant={CardVariant.primary}
+        width='200px'
+        height='200px'
+      >
+        <button>Кнпока</button>
+      </Card>
+      <UserList users={[]} />
     </div>
-  );
+  )
 }
 
-export default App;
+export default App

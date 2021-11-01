@@ -1,46 +1,172 @@
-# Getting Started with Create React App
+Пропсы :
+Компонент принимающий пропсы должен сделать интерфейс для типов данных пропсов
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+```typescript
+import React from 'react'
 
-## Available Scripts
+interface CardProps {
+  width?: string
+  height?: string
+  children?: React.ReactChild | React.ReactNode
+}
 
-In the project directory, you can run:
+const Card = ({ width, height, children }: CardProps) => {
+  return <div style={{ width, height, border: '1px solid gray' }}>{children}</div>
+}
 
-### `yarn start`
+export default Card
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Знак вопроса в интерфейсе означает , что поле необязательное для получения в компоненте
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+```typescript
+interface CardProps {
+  width?: string
+}
+```
 
-### `yarn test`
+В компоненте необходимо указать к какому интерфейсу относится пропсы
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```typescript
+const Card = ({ width}: CardProps)
+```
 
-### `yarn build`
+---
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+React.FC - явно указываем что компонент является функциональным
+<CardProps> - Передаем в Джинерик интерфейс к которому будет ссылаться наш компонент
+Такая запись позволяет не прописывать children в интерфейсе
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```typescript
+import React from 'react'
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+interface CardProps {
+  width?: string
+  height?: string
+}
 
-### `yarn eject`
+const Card: React.FC<CardProps> = ({ width, height, children }) => {
+  return <div style={{ width, height, border: '1px solid gray' }}>{children}</div>
+}
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+export default Card
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+---
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+Сокращение записи :
+Импортируем FC для улучшения читабельности кода
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+```typescript
+import React, { FC } from 'react'
 
-## Learn More
+interface CardProps {
+  width?: string
+  height?: string
+}
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+const Card: FC<CardProps> = ({ width, height, children }) => {
+  return <div style={{ width, height, border: '1px solid gray' }}>{children}</div>
+}
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+export default Card
+```
+
+---
+
+Enam
+
+В интерфейсе могут быть поля которые принимаютв себя параметры из enam
+(variant Может принять в себя параметр outlined или primary иначе будет ошибка)
+
+```typescript
+import React, { FC } from 'react'
+
+export enum CardVariant {
+  outlined = 'outlined',
+  primary = 'primary',
+}
+
+interface CardProps {
+  width?: string
+  height?: string
+  variant: CardVariant
+}
+
+const Card: FC<CardProps> = ({ width, height, variant, children }) => {
+  return (
+    <div
+      style={{
+        width,
+        height,
+        border: variant === CardVariant.outlined ? '1px solid gray' : 'none',
+        background: variant === CardVariant.primary ? 'lightgray' : '',
+      }}
+    >
+      {children}
+    </div>
+  )
+}
+
+export default Card
+```
+
+Передача пропса с полем из Enam
+CardVariant - указываем название enam
+CardVariant.primary - нужно поле в enam
+
+```typescript
+<Card variant={CardVariant.primary} width='200px' height='200px'>
+  <button>Кнпока</button>
+</Card>
+```
+
+---
+
+Передача функции в компонент :
+
+```typescript
+interface CardProps {
+  onNum?: (num: number) => number // Принимает число и возвращает число
+  onStr: (str: string) => string // Принимает строку и возвращает сроку
+  onClick: () => void // Ничего не принимает и ничего невозвращает
+}
+```
+
+Компонент который передает функцию :
+
+```typescript
+<Card onClick={() => console.log('click')}></Card>
+```
+
+---
+
+папочка types чтобы мы могли использовать типы в разных частях приожения
+
+Компонени UserLisr - Принмает в себя массив объектов
+
+```typescript
+interface UserListProps {
+  users: IUser[]
+}
+```
+
+Types/types.tsx :
+Каждый элемент массива users - хранит в себе объект ктоторый относится к интерфейсу IUser ,
+Поле address из интерфейса IUser наследует типы от interface IAddress
+(Данные полученные с API (но указаны не все поля , возможно другими нельзя пользоваться ))
+
+```typescript
+export interface IAddress {
+  street: string
+  city: string
+  zipcode: string
+}
+
+export interface IUser {
+  id: number
+  name: string
+  email: string
+  address: IAddress
+}
+```
