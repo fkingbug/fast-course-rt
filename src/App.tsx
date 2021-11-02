@@ -1,8 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Card, { CardVariant } from './components/Card'
 import UserList from './components/UserList'
+import { IUser } from './types/types'
+
 //15:53
 const App = () => {
+  const [users, setUsers] = useState<IUser[]>([])
   return (
     <div>
       <Card
@@ -13,7 +16,7 @@ const App = () => {
       >
         <button>Кнпока</button>
       </Card>
-      <UserList users={[]} />
+      <UserList users={users} />
     </div>
   )
 }

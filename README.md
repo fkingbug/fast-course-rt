@@ -170,3 +170,100 @@ export interface IUser {
   address: IAddress
 }
 ```
+
+---
+
+Пример работы с массивом users (Данные не из сервера)
+Массмв users зависит от интерфейса IUser(соответствует требования полей)
+App.js (С фейк джейсончиком):
+
+```typescript
+import React from 'react'
+import Card, { CardVariant } from './components/Card'
+import UserList from './components/UserList'
+import { IUser } from './types/types'
+
+//15:53
+const App = () => {
+  const users: IUser[] = [
+    {
+      id: 1,
+      name: 'Ulbi tv',
+      email: 'qweqwe@mail.ru',
+      address: { city: 'Moscow', street: 'Lenina', zipcode: '123' },
+    },
+    {
+      id: 2,
+      name: 'Арчаков',
+      email: 'archacow@mail.ru',
+      address: { city: 'NNOW', street: 'Lenina', zipcode: '123' },
+    },
+  ]
+  return (
+    <div>
+      <Card
+        onClick={(num) => console.log('click', num)}
+        variant={CardVariant.primary}
+        width='200px'
+        height='200px'
+      >
+        <button>Кнпока</button>
+      </Card>
+      <UserList users={users} />
+    </div>
+  )
+}
+
+export default App
+```
+
+UserLust :
+принимает в себя только 1 пропс (Дженерик как Обобщающий тип)
+
+```typescript
+import { FC } from 'react'
+import { IUser } from '../types/types'
+import UserItem from './UserItem'
+
+interface UserListProps {
+  users: IUser[]
+}
+
+const UserList: FC<UserListProps> = ({ users }) => {
+  return (
+    <div>
+      {users.map((user) => (
+        <UserItem key={user.id} user={user} />
+      ))}
+    </div>
+  )
+}
+
+export default UserList
+```
+
+UserItem :
+Принимает в себя только 1 пропс user (это не массив , а 1 из объектов этого массива)
+
+```typescript
+import React, { FC } from 'react'
+import { IUser } from '../types/types'
+
+interface UserItemProps {
+  user: IUser
+}
+
+const UserItem: FC<UserItemProps> = ({ user }) => {
+  return (
+    <div style={{ padding: 15, border: '1px solid gray' }}>
+      {user.id}. {user.name} проживает в городе {user.address.city} на улицу {user.address.street}
+    </div>
+  )
+}
+
+export default UserItem
+```
+
+---
+
+Типизация запроса на сервер
